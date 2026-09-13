@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 爬取的真实数据（不提交，避免隐私/合规问题）
+data/raw/boss.csv
+
+# 生成的图表与排行榜 CSV（部署不需要，运行时由 app 直接算）
+output/
+
+# 系统文件
+.DS_Store
+
+# Streamlit secrets（API Key，不提交）
+.streamlit/secrets.toml
