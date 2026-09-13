@@ -35,7 +35,7 @@ n_ind = int(df["industry"].nunique()) if "industry" in df.columns else 0
 st.markdown(
     f"""
     <div class="stats">
-        <div class="stat"><div class="stat-num">{len(df)}</div><div class="stat-label">岗位样本</div></div>
+        <div class="stat"><div class="stat-num">{len(df)}</div><div class="stat-label">真实岗位</div></div>
         <div class="stat"><div class="stat-num">{n_ind}</div><div class="stat-label">覆盖行业</div></div>
         <div class="stat"><div class="stat-num">{len(SKILLS)}</div><div class="stat-label">技能词</div></div>
         <div class="stat"><div class="stat-num">7</div><div class="stat-label">AI 工具</div></div>
@@ -48,8 +48,8 @@ st.markdown(
 st.markdown(
     """
     <div class="data-note">
-        <b>数据说明</b>：本站图表数据为<b>示例数据</b>（500 条岗位样本，非真实招聘数据），仅用于功能演示。
-        薪资为税前估算中值（K = 千元/月），技能词表为预设的 20 项数据分析相关技能。
+        <b>数据说明</b>：本站图表数据为<b>真实岗位数据</b>（300 条 Python/数据方向岗位，来自公开脱敏的招聘数据集，岗位主要位于上海）。
+        薪资为税前估算中值（K = 千元/月），技能词表为预设的 20 项数据相关技能。
     </div>
     """,
     unsafe_allow_html=True,

@@ -18,7 +18,7 @@ df = load_data()
 
 hero(
     "招聘市场分析",
-    "数据分析岗的招聘全景：薪资、行业、学历、经验",
+    "数据岗的招聘全景：薪资、行业、学历、经验",
 )
 st.caption("图表可悬停查看数值、框选缩放；点击「行业对比」中的柱子可联动筛选其他图表。")
 
@@ -72,7 +72,7 @@ c2.metric("平均月薪", f"{filtered['salary_mid'].mean():.1f} K")
 c3.metric("月薪中位数", f"{filtered['salary_mid'].median():.1f} K")
 top_skill = max(SKILLS, key=lambda s: int(filtered["skill_" + s].sum()))
 c4.metric("最吃香技能", top_skill)
-st.caption("K = 千元/月。月薪为税前估算中值，样本数据仅供演示。")
+st.caption("K = 千元/月。月薪为税前估算中值，数据为公开脱敏的真实岗位数据。")
 
 st.divider()
 
@@ -143,7 +143,7 @@ m1.metric("岗位数（条）", f"{len(sub)}")
 m2.metric("平均月薪（K/月）", f"{sub['salary_mid'].mean():.1f}")
 m3.metric("月薪中位数（K/月）", f"{sub['salary_mid'].median():.1f}")
 m4.metric("主要学历要求", sub["education"].value_counts().index[0] if len(sub) else "—")
-st.caption(f"「{chosen}」行业共 {len(sub)} 条岗位样本。月薪为税前估算中值，单位 K = 千元/月；"
+st.caption(f"「{chosen}」行业共 {len(sub)} 条岗位。月薪为税前估算中值，单位 K = 千元/月；"
            "技能要求请到「技能排行」页查看。")
 
 # —— 原始数据 ——

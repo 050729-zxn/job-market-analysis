@@ -41,7 +41,7 @@ def extract_skills(df):
     """从职位描述里提取技能关键词，生成 skill_ 开头的 0/1 列。"""
     desc = df["description"].fillna("").astype(str)
     for skill in SKILLS:
-        df["skill_" + skill] = desc.str.contains(skill, regex=False).astype(int)
+        df["skill_" + skill] = desc.str.contains(skill, regex=False, case=False).astype(int)
     return df
 
 
