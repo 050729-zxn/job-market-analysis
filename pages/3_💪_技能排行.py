@@ -8,7 +8,7 @@ import pandas as pd
 import streamlit as st
 from styles import inject_css, hero
 from viz import load_data, hbar, country_select, skill_display, category_display, SKILLS, SKILL_CATEGORY
-from i18n import t, lang_toggle
+from i18n import t, lang_toggle, cat_text, cat_multiselect
 
 st.set_page_config(page_title="给个工作吧 · 技能排行", page_icon="💪", layout="wide")
 inject_css()
@@ -59,7 +59,8 @@ def render_skills(sub, country, key_prefix):
     st.caption(t("cap_industry_rank"))
 
     all_ind = sorted(sub["industry"].dropna().unique().tolist())
-    pick_ind = st.selectbox(t("pick_ind_rank"), all_ind, key=f"{key_prefix}_rank_ind")
+    pick_ind = st.selectbox(t("pick_ind_rank"), all_ind, key=f"{key_prefix}_rank_ind",
+                            format_func=lambda v: cat_text("industry", v))
     sub_ind = sub[sub["industry"] == pick_ind]
     n = len(sub_ind)
     rank_rows = []
@@ -79,7 +80,7 @@ def render_skills(sub, country, key_prefix):
         hbar(top[t("col_skill")], top[t("col_rate")], xlabel=t("col_rate"), fmt="{:.1f}%"),
         use_container_width=True,
     )
-    st.caption(t("cap_top15", ind=pick_ind))
+    st.caption(t("cap_top15", ind=cat_text("industry", pick_ind)))
 
     # —— 技能在哪些行业吃香 ——
     st.subheader(t("sec_skill_industry"))
@@ -99,7 +100,7 @@ def render_skills(sub, country, key_prefix):
         skill_rows.append((ind, rate))
     skill_rows.sort(key=lambda x: x[1], reverse=True)
     st.plotly_chart(
-        hbar([r[0] for r in skill_rows], [r[1] for r in skill_rows],
+        hbar([cat_text("industry", r[0]) for r in skill_rows], [r[1] for r in skill_rows],
              xlabel=t("col_rate"), fmt="{:.1f}%"),
         use_container_width=True,
     )
@@ -118,13 +119,13 @@ if mode in ("CN", "US"):
     f1, f2, f3 = st.columns(3)
     with f1:
         edu_opt = sub["education"].dropna().unique().tolist()
-        sel_edu = st.multiselect(t("f_edu"), edu_opt, default=edu_opt, key=f"edu_{mode}")
+        sel_edu = cat_multiselect(t("f_edu"), edu_opt, "education", f"edu_{mode}")
     with f2:
         exp_opt = sub["experience"].dropna().unique().tolist()
-        sel_exp = st.multiselect(t("f_exp"), exp_opt, default=exp_opt, key=f"exp_{mode}")
+        sel_exp = cat_multiselect(t("f_exp"), exp_opt, "experience", f"exp_{mode}")
     with f3:
         ind_opt = sub["industry"].dropna().unique().tolist()
-        sel_ind = st.multiselect(t("f_ind"), ind_opt, default=ind_opt, key=f"ind_{mode}")
+        sel_ind = cat_multiselect(t("f_ind"), ind_opt, "industry", f"ind_{mode}")
 
     filtered = sub[
         sub["education"].isin(sel_edu)

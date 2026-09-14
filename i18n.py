@@ -2,6 +2,8 @@
 """中英双语：文案字典 + 语言切换。"""
 import streamlit as st
 
+from catalog_i18n import EDU_EN, EXP_EN, IND_EN, IND_ZH
+
 T = {
     # —— 通用 ——
     "back_home": {"zh": "← 返回主页", "en": "← Back to Home"},
@@ -227,6 +229,39 @@ def t(key, **kw):
         return key
     s = entry.get(lang) or entry.get("en") or key
     return s.format(**kw) if kw else s
+
+
+def cat_text(category, value):
+    """分类值的当前语言显示名：category ∈ {"education", "experience", "industry"}。
+
+    - education / experience：数据统一是中文，切英文时翻成英文。
+    - industry：中文名→英文（切英文时），英文名→中文（切中文时）。
+    """
+    if value is None:
+        return value
+    lang = get_lang()
+    if category in ("education", "experience"):
+        if lang == "en":
+            table = EDU_EN if category == "education" else EXP_EN
+            return table.get(value, value)
+        return value
+    # industry
+    if lang == "en":
+        return IND_EN.get(value, value)
+    return IND_ZH.get(value, value)
+
+
+def cat_multiselect(label, raw_options, category, key):
+    """带分类翻译的多选筛选器。
+
+    由于 st.multiselect 的 format_func 不作用于「已选标签」，这里直接把选项值
+    换成翻译后的文本，再反查回原始值，供页面用原始值做数据过滤。
+    key 末尾会拼上当前语言，切换语言时自动重置为全选。
+    """
+    show = [cat_text(category, v) for v in raw_options]
+    back = dict(zip(show, raw_options))
+    sel = st.multiselect(label, show, default=show, key=f"{key}_{get_lang()}")
+    return [back.get(v, v) for v in sel]
 
 
 def salary_text(country, field):
