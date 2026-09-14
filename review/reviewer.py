@@ -16,6 +16,25 @@ import requests
 API_URL = "https://api.deepseek.com/chat/completions"
 MODEL = "deepseek-chat"  # 可在页面上改，如 deepseek-v4-pro / deepseek-reasoner
 
+# 当前输出语言（由页面在渲染时设置，用于让 AI 结果跟随界面语言）
+_CURRENT_LANG = "zh"
+
+LANG_INSTR = {
+    "zh": "请用中文回答，包括所有枚举值和薪资范围（薪资用「K/月」）。",
+    "en": (
+        "Respond entirely in English — including all enum values "
+        "(高/中/低 → high/medium/low, 强/中/弱 → strong/medium/weak, "
+        "已满足/部分满足/缺失 → met/partially met/missing, 低/中/高 → low/medium/high) "
+        "and salary ranges in $K/year."
+    ),
+}
+
+
+def set_lang(lang):
+    """设置后续所有工具调用的输出语言（'zh' / 'en'）。"""
+    global _CURRENT_LANG
+    _CURRENT_LANG = lang if lang in ("zh", "en") else "zh"
+
 
 def extract_text(uploaded_file):
     """从上传的文件里提取纯文本。支持 txt / md / docx / pdf。"""
@@ -71,6 +90,7 @@ def _run_tool(api_key, system, user, schema, model=MODEL):
         user
         + "\n\n请严格按以下 JSON 结构返回（不要输出任何多余文字）：\n"
         + json.dumps(schema, ensure_ascii=False, indent=2)
+        + "\n\n" + LANG_INSTR[_CURRENT_LANG]
     )
     result = _call_llm(api_key, system, user_full, model)
     # 校验顶层字段是否齐全，缺了就给用户友好提示，而不是渲染出静默空白

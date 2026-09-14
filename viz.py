@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-"""共享可视化工具：配色、技能词表、Plotly 图表函数、数据加载。"""
+"""共享可视化工具：配色、技能词表、Plotly 图表函数、数据加载、国家选择。"""
 import os
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
+
+from skills import SKILLS, SKILL_LABEL, SKILL_CATEGORY, CATEGORY_LABEL, SKILL_PATTERNS  # noqa: F401（重导出，兼容旧 import）
+from i18n import t, get_lang
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CLEANED = os.path.join(BASE_DIR, "data", "cleaned", "cleaned.csv")
@@ -16,21 +19,6 @@ GREY = "#4B5563"        # 次要说明文字
 DARK = "#1F2937"        # 主文字 / 图表文字
 FONT = "Microsoft YaHei, PingFang SC, Noto Sans SC, sans-serif"
 
-SKILLS = ["Python", "SQL", "Excel", "Pandas", "NumPy", "Tableau", "Power BI",
-          "Machine Learning", "Data Mining", "Statistics", "Web Scraping",
-          "Spark", "Hadoop", "Hive", "ETL", "Data Warehouse",
-          "MySQL", "PostgreSQL", "Airflow", "A/B Testing"]
-
-SKILL_CATEGORY = {
-    "Python": "编程语言",
-    "Pandas": "数据处理", "NumPy": "数据处理", "Excel": "数据处理",
-    "Statistics": "数据处理", "Data Mining": "数据处理", "Web Scraping": "数据处理", "A/B Testing": "数据处理",
-    "SQL": "数据库", "MySQL": "数据库", "PostgreSQL": "数据库",
-    "Tableau": "可视化", "Power BI": "可视化",
-    "Spark": "大数据", "Hadoop": "大数据", "Hive": "大数据", "ETL": "大数据", "Data Warehouse": "大数据", "Airflow": "大数据",
-    "Machine Learning": "机器学习",
-}
-
 
 @st.cache_data
 def load_data():
@@ -38,6 +26,26 @@ def load_data():
         st.error("找不到清洗后的数据，请先运行 python analysis/clean.py")
         st.stop()
     return pd.read_csv(CLEANED)
+
+
+def country_select():
+    """数据范围选择：返回 'CN' / 'US' / 'both'。"""
+    st.markdown(f"**{t('country_scope')}**")
+    labels = {"CN": t("c_cn"), "US": t("c_us"), "both": t("c_both")}
+    return st.radio(
+        "country_mode", ["CN", "US", "both"], key="country_mode",
+        format_func=lambda c: labels[c], horizontal=True,
+    )
+
+
+def skill_display(skill):
+    """技能的当前语言显示名。"""
+    return SKILL_LABEL.get(skill, {}).get(get_lang(), skill)
+
+
+def category_display(cat_key):
+    """技能类别的当前语言显示名。"""
+    return CATEGORY_LABEL.get(cat_key, {}).get(get_lang(), cat_key)
 
 
 def style_fig(fig, height=None):
