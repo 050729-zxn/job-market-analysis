@@ -16,18 +16,19 @@ GREY = "#4B5563"        # 次要说明文字
 DARK = "#1F2937"        # 主文字 / 图表文字
 FONT = "Microsoft YaHei, PingFang SC, Noto Sans SC, sans-serif"
 
-SKILLS = ["Python", "SQL", "Excel", "Pandas", "NumPy", "Tableau", "PowerBI", "机器学习",
-          "数据挖掘", "爬虫", "Spark", "Hadoop", "统计分析", "可视化", "A/B测试", "MySQL",
-          "Hive", "ETL", "数据仓库", "FineBI"]
+SKILLS = ["Python", "SQL", "Excel", "Pandas", "NumPy", "Tableau", "Power BI",
+          "Machine Learning", "Data Mining", "Statistics", "Web Scraping",
+          "Spark", "Hadoop", "Hive", "ETL", "Data Warehouse",
+          "MySQL", "PostgreSQL", "Airflow", "A/B Testing"]
 
 SKILL_CATEGORY = {
     "Python": "编程语言",
     "Pandas": "数据处理", "NumPy": "数据处理", "Excel": "数据处理",
-    "统计分析": "数据处理", "数据挖掘": "数据处理", "A/B测试": "数据处理", "爬虫": "数据处理",
-    "SQL": "数据库", "MySQL": "数据库",
-    "Tableau": "可视化", "PowerBI": "可视化", "FineBI": "可视化", "可视化": "可视化",
-    "Spark": "大数据", "Hadoop": "大数据", "Hive": "大数据", "ETL": "大数据", "数据仓库": "大数据",
-    "机器学习": "机器学习",
+    "Statistics": "数据处理", "Data Mining": "数据处理", "Web Scraping": "数据处理", "A/B Testing": "数据处理",
+    "SQL": "数据库", "MySQL": "数据库", "PostgreSQL": "数据库",
+    "Tableau": "可视化", "Power BI": "可视化",
+    "Spark": "大数据", "Hadoop": "大数据", "Hive": "大数据", "ETL": "大数据", "Data Warehouse": "大数据", "Airflow": "大数据",
+    "Machine Learning": "机器学习",
 }
 
 

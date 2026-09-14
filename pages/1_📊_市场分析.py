@@ -18,7 +18,7 @@ df = load_data()
 
 hero(
     "招聘市场分析",
-    "数据岗的招聘全景：薪资、行业、学历、经验",
+    "全球数据岗的招聘全景：薪资、行业、学历、经验",
 )
 st.caption("图表可悬停查看数值、框选缩放；点击「行业对比」中的柱子可联动筛选其他图表。")
 
@@ -68,11 +68,11 @@ if linked_ind and linked_ind in base["industry"].values:
 st.subheader(f"概览（当前 {len(filtered)} 条岗位）")
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("有效岗位数", f"{len(filtered)} 条")
-c2.metric("平均月薪", f"{filtered['salary_mid'].mean():.1f} K")
-c3.metric("月薪中位数", f"{filtered['salary_mid'].median():.1f} K")
+c2.metric("平均年薪", f"{filtered['salary_mid'].mean():.1f} K")
+c3.metric("年薪中位数", f"{filtered['salary_mid'].median():.1f} K")
 top_skill = max(SKILLS, key=lambda s: int(filtered["skill_" + s].sum()))
 c4.metric("最吃香技能", top_skill)
-st.caption("K = 千元/月。月薪为税前估算中值，数据为公开脱敏的真实岗位数据。")
+st.caption("K = 千美元/年。年薪为税前估算中值，数据为公开的真实全球岗位数据。")
 
 st.divider()
 
@@ -80,11 +80,11 @@ st.divider()
 st.subheader("薪资分布")
 fig = px.histogram(filtered, x="salary_mid", nbins=20, color_discrete_sequence=[BLUE],
                    text_auto=True)
-fig.update_layout(xaxis_title="月薪（K）", yaxis_title="岗位数")
+fig.update_layout(xaxis_title="年薪（K美元）", yaxis_title="岗位数")
 fig.update_traces(marker_line=dict(color="white", width=1),
                   textposition="outside", textfont=dict(size=11, color=DARK))
 st.plotly_chart(style_fig(fig, height=320), use_container_width=True)
-st.caption("横轴为月薪（K），纵轴为该薪资区间的岗位数量。悬停可看每个区间的具体数量。")
+st.caption("横轴为年薪（K美元），纵轴为该薪资区间的岗位数量。悬停可看每个区间的具体数量。")
 
 # —— 行业对比（可点击联动） ——
 st.subheader("行业对比")
@@ -98,9 +98,9 @@ with c1:
     )
     st.caption("点击某根柱子，其他图表会联动筛选到该行业。")
 with c2:
-    st.markdown("**各行业平均月薪**")
+    st.markdown("**各行业平均年薪**")
     ind_salary = base.groupby("industry")["salary_mid"].mean().sort_values(ascending=False)
-    st.plotly_chart(hbar(ind_salary.index, ind_salary.values, xlabel="月薪（K）", fmt="{:,.1f}"),
+    st.plotly_chart(hbar(ind_salary.index, ind_salary.values, xlabel="年薪（K美元）", fmt="{:,.1f}"),
                     use_container_width=True)
     st.caption("反映各行业的薪资水平差异。")
 
@@ -140,10 +140,10 @@ chosen = st.selectbox("选择一个行业查看详情", sorted(base["industry"].
 sub = base[base["industry"] == chosen]
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("岗位数（条）", f"{len(sub)}")
-m2.metric("平均月薪（K/月）", f"{sub['salary_mid'].mean():.1f}")
-m3.metric("月薪中位数（K/月）", f"{sub['salary_mid'].median():.1f}")
+m2.metric("平均年薪（K美元）", f"{sub['salary_mid'].mean():.1f}")
+m3.metric("年薪中位数（K美元）", f"{sub['salary_mid'].median():.1f}")
 m4.metric("主要学历要求", sub["education"].value_counts().index[0] if len(sub) else "—")
-st.caption(f"「{chosen}」行业共 {len(sub)} 条岗位。月薪为税前估算中值，单位 K = 千元/月；"
+st.caption(f"「{chosen}」行业共 {len(sub)} 条岗位。年薪为税前估算中值，单位 K = 千美元/年；"
            "技能要求请到「技能排行」页查看。")
 
 # —— 原始数据 ——

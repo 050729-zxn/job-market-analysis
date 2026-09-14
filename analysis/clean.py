@@ -12,15 +12,16 @@ RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
 CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned")
 OUT_FILE = os.path.join(CLEANED_DIR, "cleaned.csv")
 
-# 技能关键词（与 crawler 里保持一致，用于从描述中提取）
-SKILLS = ["Python", "SQL", "Excel", "Pandas", "NumPy", "Tableau", "PowerBI", "机器学习",
-          "数据挖掘", "爬虫", "Spark", "Hadoop", "统计分析", "可视化", "A/B测试", "MySQL",
-          "Hive", "ETL", "数据仓库", "FineBI"]
+# 技能关键词（与 viz.py 保持一致，用于从描述中提取）
+SKILLS = ["Python", "SQL", "Excel", "Pandas", "NumPy", "Tableau", "Power BI",
+          "Machine Learning", "Data Mining", "Statistics", "Web Scraping",
+          "Spark", "Hadoop", "Hive", "ETL", "Data Warehouse",
+          "MySQL", "PostgreSQL", "Airflow", "A/B Testing"]
 
 
 def pick_raw_file():
-    """优先用 boss.csv，没有则用 sample.csv。"""
-    for name in ("boss.csv", "sample.csv"):
+    """优先用 global.csv（全球真实数据），其次 boss.csv、sample.csv。"""
+    for name in ("global.csv", "boss.csv", "sample.csv"):
         p = os.path.join(RAW_DIR, name)
         if os.path.exists(p):
             return p
@@ -38,7 +39,12 @@ def clean_salary(df):
 
 
 def extract_skills(df):
-    """从职位描述里提取技能关键词，生成 skill_ 开头的 0/1 列。"""
+    """从职位描述里提取技能关键词，生成 skill_ 开头的 0/1 列。
+
+    若数据已带 skill_ 列（parse_global_data.py 已从完整描述提取），则跳过。
+    """
+    if "skill_Python" in df.columns:
+        return df
     desc = df["description"].fillna("").astype(str)
     for skill in SKILLS:
         df["skill_" + skill] = desc.str.contains(skill, regex=False, case=False).astype(int)
